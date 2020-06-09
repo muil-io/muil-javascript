@@ -1,11 +1,20 @@
 {
   "name": "@muil/muil-javascript",
+  "main": "lib/index.js",
+  "files": [
+    "lib/**/*.js",
+    "lib/**/*.d.ts"
+  ],
+  "homepage": "https://muil.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muil-io/muil-javascript"
+  },
   "scripts": {
     "build": "tsc",
     "lint": "eslint 'src/**/*.ts'",
     "prepublish": "npm run build"
   },
-  "main": "lib/index.js",
   "dependencies": {
     "axios": "^0.19.2",
     "form-data": "^3.0.0"
@@ -22,5 +31,5 @@
     "prettier": "^2.0.4",
     "typescript": "^3.2.2"
   },
-  "version": "0.0.0"
+  "version": "0.0.1"
 }
