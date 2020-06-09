@@ -2,7 +2,7 @@ import axios from 'axios';
 import FormData from 'form-data';
 import { Config, TemplateOptions, MailOptions } from './types';
 
-const baseUrl = 'https://us-central1-muil-dev.cloudfunctions.net/v1';
+const baseUrl = 'https://us-central1-muil-io.cloudfunctions.net/v1';
 
 let apiKey: string = null;
 let projectId: string = null;
