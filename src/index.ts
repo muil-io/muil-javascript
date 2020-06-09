@@ -1,6 +1,5 @@
 import axios from 'axios';
 import FormData from 'form-data';
-import fs from 'fs';
 import { Config, TemplateOptions, MailOptions } from './types';
 
 const baseUrl = 'https://us-central1-muil-dev.cloudfunctions.net/v1';
