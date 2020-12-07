@@ -16,12 +16,12 @@ yarn add @muil/muil-javascript
 
 ## Initialization
 
-First you have to initialize the service with Api Key and project ID
+First you have to initialize the service with Api Key and host (if not using our SaaS solution)
 
 ```
 import muil from '@muil/muil-javascript';
 
-muil.init({ apiKey: '123456.1234567890.awesomeProject', projectId: 'awesomeProject' });
+muil.init({ host: 'MY_HOST_ADDRESS', apiKey: 'MY_API_KEY' });
 ```
 
 ## Generate Template
@@ -65,7 +65,7 @@ muil.sendMail({
 - subject - The subject of the email
   Y
 
-## Send Email from Template with Attchment
+## Send Email from Template with Attachment
 
 ```
 muil.sendMail({
