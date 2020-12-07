@@ -1,4 +1,4 @@
-export type Config = { apiKey: string; projectId: string };
+export type Config = { host?: string; apiKey: string };
 
 export type TemplateOptions = {
   templateId: string;
@@ -20,3 +20,7 @@ export type Attachment =
   | ({ filename: string } & TemplateOptions)
   | { filename: string; content: string }
   | { filename: string; path: string };
+
+export class HttpError {
+  constructor(private statusCode: number, private message: string) {}
+}

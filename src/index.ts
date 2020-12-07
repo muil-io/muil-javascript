@@ -1,19 +1,17 @@
 import axios from 'axios';
 import FormData from 'form-data';
-import { Config, TemplateOptions, MailOptions } from './types';
+import { Config, TemplateOptions, MailOptions, HttpError } from './types';
 
-const baseUrl = 'https://us-central1-muil-io.cloudfunctions.net/v1';
-
+let host: string = null;
 let apiKey: string = null;
-let projectId: string = null;
 
 export const init = (config: Config) => {
+  host = config.host || 'https://app.muil.io';
   apiKey = config.apiKey;
-  projectId = config.projectId;
 };
 
 const ensureInitialized = () => {
-  if (!apiKey || !projectId) {
+  if (!apiKey) {
     throw new Error('Service is not initialized (please init it by calling the init function)');
   }
 };
@@ -25,20 +23,20 @@ export const generate = async ({
   type = 'html',
 }: TemplateOptions) => {
   ensureInitialized();
+
   try {
     const { data } = await axios.post(
-      `${baseUrl}/templates/${projectId}/${branch}/${templateId}?type=${type}`,
-      {
-        props,
-      },
+      `${host}/templates/${branch}/${templateId}?type=${type}`,
+      { props },
+      { headers: { 'x-api-key': apiKey } },
     );
     return data;
   } catch ({
     response: {
-      data: { error },
+      data: { statusCode, message },
     },
   }) {
-    throw new Error(error.description ?? error.message);
+    throw new HttpError(statusCode, message);
   }
 };
 
@@ -56,7 +54,7 @@ export const sendMail = async ({
   ensureInitialized();
   try {
     await axios.post(
-      `${baseUrl}/templates/${projectId}/${branch}/${templateId}/email`,
+      `${host}/templates/${branch}/${templateId}/email`,
       {
         from,
         to,
@@ -66,14 +64,14 @@ export const sendMail = async ({
         props,
         attachments,
       },
-      {
-        headers: {
-          'x-api-key': apiKey,
-        },
-      },
+      { headers: { 'x-api-key': apiKey } },
     );
-  } catch ({ response: { data } }) {
-    throw new Error(data.error?.description ?? data.error?.message ?? data);
+  } catch ({
+    response: {
+      data: { statusCode, message },
+    },
+  }) {
+    throw new HttpError(statusCode, message);
   }
 };
 
@@ -87,26 +85,31 @@ export const uploadAsset = async (fileName: string, value: any) => {
       data: {
         data: { url },
       },
-    } = await axios.post(`${baseUrl}/assets/${projectId}/${fileName}`, bodyData, {
+    } = await axios.post(`${host}/assets/${fileName}`, bodyData, {
       headers: { ...bodyData.getHeaders(), 'x-api-key': apiKey },
     });
 
     return url;
-  } catch (err) {
-    const {
-      response: { data },
-    } = err;
-    throw new Error(data.error?.description ?? data.error?.message ?? data);
+  } catch ({
+    response: {
+      data: { statusCode, message },
+    },
+  }) {
+    throw new HttpError(statusCode, message);
   }
 };
 
 export const deleteAsset = async (fileName: string) => {
   ensureInitialized();
   try {
-    await axios.delete(`${baseUrl}/assets/${projectId}/${fileName}`, {
+    await axios.delete(`${host}/assets/${fileName}`, {
       headers: { 'x-api-key': apiKey },
     });
-  } catch ({ response: { data } }) {
-    throw new Error(data.error?.description ?? data.error?.message ?? data);
+  } catch ({
+    response: {
+      data: { statusCode, message },
+    },
+  }) {
+    throw new HttpError(statusCode, message);
   }
 };
