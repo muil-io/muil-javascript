@@ -1,6 +1,6 @@
 import axios from 'axios';
 import FormData from 'form-data';
-import { Config, TemplateOptions, MailOptions, HttpError } from './types';
+import { Config, TemplateOptions, MailOptions } from './types';
 
 let host: string = null;
 let apiKey: string = null;
@@ -24,20 +24,13 @@ export const generate = async ({
 }: TemplateOptions) => {
   ensureInitialized();
 
-  try {
-    const { data } = await axios.post(
-      `${host}/templates/${branch}/${templateId}?type=${type}`,
-      { props },
-      { headers: { 'x-api-key': apiKey } },
-    );
-    return data;
-  } catch ({
-    response: {
-      data: { statusCode, message },
-    },
-  }) {
-    throw new HttpError(statusCode, message);
-  }
+  const { data } = await axios.post(
+    `${host}/templates/${branch}/${templateId}?type=${type}`,
+    { props },
+    { headers: { 'x-api-key': apiKey } },
+  );
+
+  return data;
 };
 
 export const sendMail = async ({
@@ -52,64 +45,43 @@ export const sendMail = async ({
   attachments,
 }: TemplateOptions & MailOptions) => {
   ensureInitialized();
-  try {
-    await axios.post(
-      `${host}/templates/${branch}/${templateId}/email`,
-      {
-        from,
-        to,
-        cc,
-        bcc,
-        subject,
-        props,
-        attachments,
-      },
-      { headers: { 'x-api-key': apiKey } },
-    );
-  } catch ({
-    response: {
-      data: { statusCode, message },
+
+  await axios.post(
+    `${host}/templates/${branch}/${templateId}/email`,
+    {
+      from,
+      to,
+      cc,
+      bcc,
+      subject,
+      props,
+      attachments,
     },
-  }) {
-    throw new HttpError(statusCode, message);
-  }
+    { headers: { 'x-api-key': apiKey } },
+  );
 };
 
 export const uploadAsset = async (fileName: string, value: any) => {
   ensureInitialized();
-  try {
-    const bodyData = new FormData();
-    bodyData.append('file', value, { filename: fileName });
 
-    const {
-      data: {
-        data: { url },
-      },
-    } = await axios.post(`${host}/assets/${fileName}`, bodyData, {
-      headers: { ...bodyData.getHeaders(), 'x-api-key': apiKey },
-    });
+  const bodyData = new FormData();
+  bodyData.append('file', value, { filename: fileName });
 
-    return url;
-  } catch ({
-    response: {
-      data: { statusCode, message },
+  const {
+    data: {
+      data: { url },
     },
-  }) {
-    throw new HttpError(statusCode, message);
-  }
+  } = await axios.post(`${host}/assets/${fileName}`, bodyData, {
+    headers: { ...bodyData.getHeaders(), 'x-api-key': apiKey },
+  });
+
+  return url;
 };
 
 export const deleteAsset = async (fileName: string) => {
   ensureInitialized();
-  try {
-    await axios.delete(`${host}/assets/${fileName}`, {
-      headers: { 'x-api-key': apiKey },
-    });
-  } catch ({
-    response: {
-      data: { statusCode, message },
-    },
-  }) {
-    throw new HttpError(statusCode, message);
-  }
+
+  await axios.delete(`${host}/assets/${fileName}`, {
+    headers: { 'x-api-key': apiKey },
+  });
 };

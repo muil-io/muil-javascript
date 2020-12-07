@@ -20,9 +20,3 @@ export type Attachment =
   | ({ filename: string } & TemplateOptions)
   | { filename: string; content: string }
   | { filename: string; path: string };
-
-export class HttpError extends Error {
-  constructor(private statusCode: number, message: string) {
-    super(message);
-  }
-}
