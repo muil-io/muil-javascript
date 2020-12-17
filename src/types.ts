@@ -1,3 +1,5 @@
+import { ResponseType } from 'axios';
+
 export type Config = { host?: string; apiKey: string };
 
 export type TemplateOptions = {
@@ -5,6 +7,7 @@ export type TemplateOptions = {
   branch?: string;
   type?: 'html' | 'pdf' | 'png';
   props: object;
+  responseType?: ResponseType;
 };
 
 export type MailOptions = {

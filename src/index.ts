@@ -1,5 +1,4 @@
 import axios from 'axios';
-import FormData from 'form-data';
 import { Config, TemplateOptions, MailOptions } from './types';
 
 let host: string = null;
@@ -21,13 +20,17 @@ export const generate = async ({
   branch = 'master',
   props,
   type = 'html',
+  responseType,
 }: TemplateOptions) => {
   ensureInitialized();
 
   const { data } = await axios.post(
     `${host}/templates/${branch}/${templateId}?type=${type}`,
     { props },
-    { headers: { 'x-api-key': apiKey } },
+    {
+      headers: { 'x-api-key': apiKey },
+      responseType: responseType ?? type === 'html' ? 'json' : 'arraybuffer',
+    },
   );
 
   return data;
@@ -59,29 +62,4 @@ export const sendMail = async ({
     },
     { headers: { 'x-api-key': apiKey } },
   );
-};
-
-export const uploadAsset = async (fileName: string, value: any) => {
-  ensureInitialized();
-
-  const bodyData = new FormData();
-  bodyData.append('file', value, { filename: fileName });
-
-  const {
-    data: {
-      data: { url },
-    },
-  } = await axios.post(`${host}/assets/${fileName}`, bodyData, {
-    headers: { ...bodyData.getHeaders(), 'x-api-key': apiKey },
-  });
-
-  return url;
-};
-
-export const deleteAsset = async (fileName: string) => {
-  ensureInitialized();
-
-  await axios.delete(`${host}/assets/${fileName}`, {
-    headers: { 'x-api-key': apiKey },
-  });
 };
