@@ -5,7 +5,7 @@ let host: string = null;
 let apiKey: string = null;
 
 export const init = (config: Config) => {
-  host = config.host || 'https://app.muil.io';
+  host = `${config.host}/api` || 'https://app.muil.io/api';
   apiKey = config.apiKey;
 };
 
