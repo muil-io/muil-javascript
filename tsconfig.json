@@ -9,7 +9,8 @@
     "baseUrl": "src",
     "lib": ["es2015"],
     "declaration": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "skipLibCheck": true
   },
   "compileOnSave": true,
   "include": ["src"]
