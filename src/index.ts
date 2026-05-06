@@ -1,11 +1,11 @@
 import axios from 'axios';
 import { Config, TemplateOptions, MailOptions } from './types';
 
-let host: string = null;
-let apiKey: string = null;
+let host: string;
+let apiKey: string;
 
 export const init = (config: Config) => {
-  host = `${config.host}/api` || 'https://app.muil.io/api';
+  host = `${config.host}/api`;
   apiKey = config.apiKey;
 };
 
